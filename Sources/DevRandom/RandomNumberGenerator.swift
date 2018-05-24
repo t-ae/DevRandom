@@ -9,13 +9,14 @@ public final class RandomNumberGenerator {
         }
     }
     
+    public let source: Source
     private let fileHandle: FileHandle
     
     public init?(source: Source) {
         guard let handle = FileHandle(forReadingAtPath: source.path) else {
             return nil
         }
-        
+        self.source = source
         self.fileHandle = handle
     }
 }
