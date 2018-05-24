@@ -1,3 +1,3 @@
-# dev-random
+# DevRandom
 
-A description of this package.
+Random number generator for Swift using `/dev/random` / `/dev/urandom`.
