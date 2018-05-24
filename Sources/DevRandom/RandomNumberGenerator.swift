@@ -21,12 +21,12 @@ public final class RandomNumberGenerator {
 }
 
 extension RandomNumberGenerator {
-    public func generate(length: Int) -> Data {
-        return fileHandle.readData(ofLength: length)
+    public func generate(count: Int) -> Data {
+        return fileHandle.readData(ofLength: count)
     }
     
     public func generate<T: FixedWidthInteger>(_ type: T.Type = T.self) -> T {
-        return generate(length: MemoryLayout<T>.size).withUnsafeBytes { p in
+        return generate(count: MemoryLayout<T>.size).withUnsafeBytes { p in
             p.pointee
         }
     }
