@@ -3,17 +3,23 @@ import DevRandom
 
 class SingleNumberTests: XCTestCase {
     
-    private func _test<T: FixedWidthInteger>(_ type: T.Type, file: StaticString = #file, line: UInt = #line) {
+    private func _test<T: FixedWidthInteger&UnsignedInteger>(_ type: T.Type, file: StaticString = #file, line: UInt = #line) {
         
         let generateCount = 1000
         
-        func _test(source: RandomNumberGenerator.Source) {
-            guard let rng = RandomNumberGenerator(source: source) else {
+        func _test(source: DevRandom.Source) {
+            guard let rng = DevRandom(source: source) else {
                 XCTFail("Failed to open \(source.path)", file: file, line: line)
                 return
             }
-            let numbers = (0..<generateCount).map { _ in rng.generate(UInt8.self) }
-            XCTAssertGreaterThan(Set(numbers).count, 0, file: file, line: line)
+            var resultOr = T(0)
+            var resultAnd = T.max
+            for _ in 0..<10000 {
+                resultOr |= rng.next() as T
+                resultAnd &= rng.next() as T
+            }
+            XCTAssertEqual(resultOr, T.max)
+            XCTAssertEqual(resultAnd, 0)
         }
         _test(source: .random)
         _test(source: .urandom)
@@ -39,37 +45,12 @@ class SingleNumberTests: XCTestCase {
         _test(UInt.self)
     }
     
-    func testInt8() {
-        _test(Int8.self)
-    }
-    
-    func testInt16() {
-        _test(Int16.self)
-    }
-    
-    func testInt32() {
-        _test(Int32.self)
-    }
-    
-    func testInt64() {
-        _test(Int64.self)
-    }
-    
-    func testInt() {
-        _test(Int.self)
-    }
-    
     static var allTests = [
         ("testUInt8", testUInt8),
         ("testUInt16", testUInt16),
         ("testUInt32", testUInt32),
         ("testUInt64", testUInt64),
         ("testUInt", testUInt),
-        ("testInt8", testInt8),
-        ("testInt16", testInt16),
-        ("testInt32", testInt32),
-        ("testInt64", testInt64),
-        ("testInt", testInt),
     ]
 
 }

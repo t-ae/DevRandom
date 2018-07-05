@@ -1,6 +1,6 @@
 import Foundation
 
-public final class RandomNumberGenerator {
+public final class DevRandom {
     
     public enum Source: String {
         case random, urandom
@@ -21,13 +21,22 @@ public final class RandomNumberGenerator {
     }
 }
 
-extension RandomNumberGenerator {
+extension DevRandom {
     public func generate(count: Int) -> Data {
         return fileHandle.readData(ofLength: count)
     }
+}
+
+extension DevRandom: RandomNumberGenerator {
+    public func next() -> UInt64 {
+        return generate(count: 8).withUnsafeBytes { (p: UnsafePointer<UInt64>) in
+            p.pointee
+        }
+    }
     
-    public func generate<T: FixedWidthInteger>(_ type: T.Type = T.self) -> T {
-        return generate(count: MemoryLayout<T>.size).withUnsafeBytes { p in
+    public func next<T>() -> T where T : FixedWidthInteger, T : UnsignedInteger {
+        let count = (T.bitWidth+7) / 8
+        return generate(count: count).withUnsafeBytes { (p: UnsafePointer<T>) in
             p.pointee
         }
     }
