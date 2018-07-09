@@ -28,15 +28,9 @@ extension DevRandom {
 }
 
 extension DevRandom: RandomNumberGenerator {
-    public func next() -> UInt64 {
-        return generate(count: 8).withUnsafeBytes { (p: UnsafePointer<UInt64>) in
-            p.pointee
-        }
-    }
-    
     public func next<T>() -> T where T : FixedWidthInteger, T : UnsignedInteger {
-        let count = (T.bitWidth+7) / 8
-        return generate(count: count).withUnsafeBytes { (p: UnsafePointer<T>) in
+        let (quotient, remainder) = T.bitWidth.quotientAndRemainder(dividingBy: UInt8.bitWidth)
+        return generate(count: quotient + remainder.signum()).withUnsafeBytes { (p: UnsafePointer<T>) in
             p.pointee
         }
     }

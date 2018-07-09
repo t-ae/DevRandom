@@ -23,14 +23,14 @@ class DataTests: XCTestCase {
     func testNext() {
         // urandom
         if let rng = DevRandom(source: .urandom) {
-            let data = (0..<100).map { _ in rng.next() }
+            let data = (0..<100).map { _ in rng.next() as UInt64 }
             XCTAssertEqual(Set(data).count, 100)
         } else {
             XCTFail("Failed to open /dev/urandom")
         }
         // uandom
         if let rng = DevRandom(source: .random) {
-            let data = (0..<100).map { _ in rng.next() }
+            let data = (0..<100).map { _ in rng.next() as UInt64 }
             XCTAssertEqual(Set(data).count, 100)
         } else {
             XCTFail("Failed to open /dev/urandom")
