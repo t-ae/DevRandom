@@ -28,7 +28,7 @@ class DataTests: XCTestCase {
         } else {
             XCTFail("Failed to open /dev/urandom")
         }
-        // uandom
+        // urandom
         if let rng = DevRandom(source: .random) {
             let data = (0..<100).map { _ in rng.next() as UInt64 }
             XCTAssertEqual(Set(data).count, 100)
@@ -39,5 +39,6 @@ class DataTests: XCTestCase {
     
     static var allTests = [
         ("testData", testData),
+        ("testNext", testNext),
     ]
 }

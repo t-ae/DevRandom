@@ -1,7 +1,6 @@
 import Foundation
 
 public final class DevRandom {
-    
     public enum Source: String {
         case random, urandom
         public var path: String {
@@ -28,10 +27,12 @@ extension DevRandom {
 }
 
 extension DevRandom: RandomNumberGenerator {
-    public func next<T>() -> T where T : FixedWidthInteger, T : UnsignedInteger {
+    public func next<T>() -> T where T : FixedWidthInteger&UnsignedInteger {
         let (quotient, remainder) = T.bitWidth.quotientAndRemainder(dividingBy: UInt8.bitWidth)
-        return generate(count: quotient + remainder.signum()).withUnsafeBytes { (p: UnsafePointer<T>) in
-            p.pointee
+        let data = generate(count: quotient + remainder.signum())
+        
+        return data.withUnsafeBytes { (p: UnsafeRawBufferPointer) in
+            p.bindMemory(to: T.self)[0]
         }
     }
 }
