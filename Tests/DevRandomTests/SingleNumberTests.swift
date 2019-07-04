@@ -8,8 +8,8 @@ class SingleNumberTests: XCTestCase {
         let generateCount = 1000
         
         func _test(source: DevRandom.Source) {
-            guard let rng = DevRandom(source: source) else {
-                XCTFail("Failed to open \(source.path)", file: file, line: line)
+            guard let rng = try? DevRandom(source: source) else {
+                XCTFail("Failed to open \(source.url)", file: file, line: line)
                 return
             }
             var resultOr = T(0)
