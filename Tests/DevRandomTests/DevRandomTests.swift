@@ -4,8 +4,8 @@ import DevRandom
 final class DevRandomTests: XCTestCase {
     
     func testMultiple() {
-        let rng1 = try! DevRandom(source: .random)
-        let rng2 = try! DevRandom(source: .random)
+        let rng1 = DevRandom(source: .random)
+        let rng2 = DevRandom(source: .random)
         
         _ = rng1.next() as UInt64
         _ = rng2.next() as UInt64
@@ -15,8 +15,21 @@ final class DevRandomTests: XCTestCase {
         _ = rng2.next() as UInt64
     }
     
+    func testClose() {
+        let rng1: DevRandom
+        
+        do {
+            let rng2 = DevRandom(source: .urandom)
+            
+            rng1 = rng2
+        }
+        
+        let gotnonzero = (0..<100).map { _ in rng1.next() as UInt64 }.contains { $0 > 0 }
+        XCTAssertTrue(gotnonzero)
+    }
+    
     func testSpeed() {
-        let rng = try! DevRandom(source: .urandom)
+        let rng = DevRandom(source: .urandom)
         
         measure {
             var sum: UInt64 = 0
@@ -40,6 +53,7 @@ final class DevRandomTests: XCTestCase {
     }
     
     static var allTests = [
-        ("testMultiple", testMultiple)
+        ("testMultiple", testMultiple),
+        ("testClose", testClose)
     ]
 }
